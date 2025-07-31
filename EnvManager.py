@@ -1,5 +1,5 @@
 from PyQt6.QtCore import QSize
-from  PyQt6.QtWidgets import QApplication, QButtonGroup, QMainWindow, QPushButton, QSizePolicy, QVBoxLayout, QWidget
+from  PyQt6.QtWidgets import QApplication, QButtonGroup, QMainWindow, QPushButton, QVBoxLayout, QWidget
 
 import sys 
 import os
@@ -19,10 +19,21 @@ def readVar(var, varName):
         return line[line.index("=")+1:]
     else:
         return var
+try:
+    with open(os.path.expanduser("~/.config/EnvManager/EnvManagerStyle.qss"), 'x') as newStyle:
+        with open("./defaultStyle.qss") as defaultStyle:
+            newStyle.write(defaultStyle.read())
+except FileExistsError:
+    pass
 
-with open("./defaultStyle.qss") as stylesheetFile:
+with open(os.path.expanduser("~/.config/EnvManager/EnvManagerStyle.qss")) as stylesheetFile:
     stylesheet = stylesheetFile.read()
-
+try:
+    with open(os.path.expanduser("~/.config/EnvManager/EnvManager.conf"), 'x') as newConfig:
+        with open("./DefaultConfig.conf") as defaultConfig:
+            newConfig.write(defaultConfig.read())
+except FileExistsError:
+    pass
 with open(os.path.expanduser("~/.config/EnvManager/EnvManager.conf")) as config:
     bracketDepth = 0
     for line in config:
