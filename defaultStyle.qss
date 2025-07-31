@@ -1,0 +1,10 @@
+QPushButton {
+  border-style: none;
+  background-color: rgb(89, 89, 90);
+  margin: 0px;
+  border: 0px;
+}
+
+QMainWindow {
+  background-color: black;
+}

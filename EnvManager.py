@@ -1,22 +1,27 @@
 from PyQt6.QtCore import QSize
-from  PyQt6.QtWidgets import QApplication, QButtonGroup, QMainWindow, QPushButton, QVBoxLayout, QWidget
+from  PyQt6.QtWidgets import QApplication, QButtonGroup, QMainWindow, QPushButton, QSizePolicy, QVBoxLayout, QWidget
 
 import sys 
 import os
 import subprocess
 
 windowXSize = 50
-windowYSize = 50
+buttonSize = 100
+borderSize = 0
 
 categories = []
 commands = []
 buttons = []
+stylesheet = ""
 
 def readVar(var, varName):
     if varName in line:
         return line[line.index("=")+1:]
     else:
         return var
+
+with open("./defaultStyle.qss") as stylesheetFile:
+    stylesheet = stylesheetFile.read()
 
 with open(os.path.expanduser("~/.config/EnvManager/EnvManager.conf")) as config:
     bracketDepth = 0
@@ -25,7 +30,8 @@ with open(os.path.expanduser("~/.config/EnvManager/EnvManager.conf")) as config:
             line = line[0:line.index('#')-1]
         line = line.strip()
         windowXSize = int(readVar(windowXSize, "windowXSize"))
-        windowYSize = int(readVar(windowYSize, "windowYSize"))
+        buttonSize = int(readVar(buttonSize, "buttonSize"))
+        borderSize = int(readVar(borderSize, "borderSize"))
 
         if bracketDepth > 0:
             if "[" in line:
@@ -82,14 +88,19 @@ class MainWindow(QMainWindow):
         
         widget = QWidget()
         layout = QVBoxLayout()
+        layout.setSpacing(0)
+        layout.setContentsMargins(0, 0, 0, 0)
 
         self.setWindowTitle("EnvManager")
         for index, source in enumerate(categories):
             buttons.append(QPushButton(source))
             self.buttonGroup.addButton(buttons[index], index)
             layout.addWidget(buttons[index])
-
-        self.setFixedSize(QSize(windowXSize, windowYSize))
+            buttons[index].setMinimumHeight(buttonSize)
+            buttons[index].setMaximumHeight(buttonSize)
+        
+        print(buttonSize)
+        self.setFixedSize(QSize(windowXSize, (buttonSize + borderSize) * len(categories)))
         
         self.buttonGroup.idClicked.connect(self.buttonVeryClicked)
 
@@ -107,6 +118,7 @@ class MainWindow(QMainWindow):
 
 app = QApplication(sys.argv)
 
+app.setStyleSheet(stylesheet)
 window = MainWindow()
 window.show()
 
